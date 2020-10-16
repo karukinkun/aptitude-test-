@@ -17,7 +17,6 @@
       "**/build/**": true,
       "**/coverage/**": true
     },
-    "stylelint.autoFixOnSave": true,
     "stylelint.configOverrides": {
       "ignoreFiles": ["node_modules/**/*.*"]
     },
