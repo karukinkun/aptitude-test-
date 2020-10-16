@@ -1,16 +1,31 @@
 /**
  * ログインページ
  *************************************************/
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import { FormControl, InputLabel, Grid, Input } from '@material-ui/core';
 import { pageStyles } from 'components/Login/Styles';
 import ActionButton from 'components/common/ActionButton';
+import { API, graphqlOperation } from 'aws-amplify';
+import { listTodos } from 'graphql/queries';
 
 const LoginPage: FC<{}> = () => {
   const history = useHistory();
   const pageClass = pageStyles();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const posts = await API.graphql(graphqlOperation(listTodos));
+        console.log('posts');
+        console.log('posts: ', posts);
+      } catch (e) {
+        console.log('ssss');
+        console.log(e);
+      }
+    })();
+  }, []);
 
   return (
     <form noValidate>
