@@ -118,7 +118,7 @@ module.exports = {
     'import/no-extraneous-dependencies': [
       'error',
       {
-        'devDependencies': ['cypress/**/*.js', 'cypress/**/*.ts']
+        'devDependencies': true
       }
     ],
 
