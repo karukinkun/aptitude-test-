@@ -3,7 +3,7 @@
  *************************************************/
 import { GraphQLResult } from '@aws-amplify/api';
 
-import React, { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import {
@@ -34,8 +34,11 @@ const StyledRadioGroup = withStyles(() => ({
 const TestPage: FC<{}> = () => {
   const history = useHistory();
   const pageClass = pageStyles();
+  const lineAreaRef = useRef<HTMLInputElement | null>(null);
   const [catergory, setCatergory] = useState<any>();
   const [quizs, setQuizs] = useState<any>([]);
+  const [time, setTime] = useState<any>(100);
+
   const [conditions, setConditions] = useState<any>({
     question1: null,
     question2: null,
@@ -68,9 +71,24 @@ const TestPage: FC<{}> = () => {
     })();
   }, []);
 
+  const countup = () => {
+    setTime((time: any) => time + 1);
+  };
+
+  useEffect(() => {
+    const timerId = setInterval(countup, 1000);
+
+    return () => clearInterval(timerId);
+  }, []);
+
   return (
     <Box px={40}>
-      <Grid container justify="center" alignItems="center" className={pageClass.formInner}>
+      <Grid container alignItems="center">
+        <Typography component="p" variant="h5">
+          <Box component="span">{time}</Box>
+        </Typography>
+      </Grid>
+      <Grid container justify="center" alignItems="center">
         {quizs.map((quiz: any) => (
           <Grid item xs={12} key={quiz.no}>
             <Box className={pageClass.inputEmail}>
