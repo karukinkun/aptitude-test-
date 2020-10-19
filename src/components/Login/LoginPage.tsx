@@ -32,6 +32,9 @@ const LoginPage: FC<{}> = () => {
       <Grid container justify="center" alignItems="center" className={pageClass.formInner}>
         <Grid item xs={9} lg={2}>
           <Box className={pageClass.inputEmail}>
+            <p>
+              10分ほど休憩で離席しようと考えています。スクリーンセーバーの時間設定はしていますが、何らかの理由で動作していない事は認識しています。正しい行動はどれですか？
+            </p>
             <FormControl fullWidth>
               <InputLabel htmlFor="email">メールアドレス</InputLabel>
               <Input
