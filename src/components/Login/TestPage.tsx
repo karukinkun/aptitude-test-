@@ -1,6 +1,8 @@
 /**
  * テストページ
  *************************************************/
+import { GraphQLResult } from '@aws-amplify/api';
+
 import React, { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
@@ -18,7 +20,8 @@ import {
 import { pageStyles } from 'components/Login/Styles';
 import ActionButton from 'components/common/ActionButton';
 import { API, graphqlOperation } from 'aws-amplify';
-import { listTodos } from 'graphql/queries';
+import { getCatergory, listCatergorys, listQuizs, listTodos } from 'graphql/queries';
+import { GetCatergoryQuery, ListCatergorysQuery, ListQuizsQuery } from 'API';
 
 /* material-uiコンポーネント 既存スタイルの上書き
 -------------------------------------------------------------- */
@@ -31,6 +34,8 @@ const StyledRadioGroup = withStyles(() => ({
 const TestPage: FC<{}> = () => {
   const history = useHistory();
   const pageClass = pageStyles();
+  const [catergory, setCatergory] = useState<any>();
+  const [quizs, setQuizs] = useState<any>([]);
   const [conditions, setConditions] = useState<any>({
     question1: null,
     question2: null,
@@ -47,22 +52,17 @@ const TestPage: FC<{}> = () => {
     [conditions],
   );
 
-  const submit = useCallback(() => {
-    (async () => {
-      try {
-        console.log(conditions);
-      } catch (e) {}
-    })();
-  }, [conditions]);
-
   useEffect(() => {
     (async () => {
       try {
-        const posts = await API.graphql(graphqlOperation(listTodos));
-        console.log('posts');
-        console.log('posts: ', posts);
+        const result = (await API.graphql(graphqlOperation(getCatergory, { id: '1' }))) as GraphQLResult<
+          GetCatergoryQuery
+        >;
+        console.log(`API_Respons : ${result}`);
+        setCatergory(result.data?.getCatergory);
+        setQuizs(result.data?.getCatergory?.quizs?.items);
+        console.log(result.data?.getCatergory?.quizs?.items);
       } catch (e) {
-        console.log('ssss');
         console.log(e);
       }
     })();
@@ -71,30 +71,7 @@ const TestPage: FC<{}> = () => {
   return (
     <Box px={40}>
       <Grid container justify="center" alignItems="center" className={pageClass.formInner}>
-        {[
-          {
-            no: 1,
-            question:
-              '10分ほど休憩で離席しようと考えています。<br/>スクリーンセーバーの時間設定はしていますが、何らかの理由で動作していない事は認識しています。<br/>正しい行動はどれですか？',
-            choices: [
-              '手動でロックをしてから席を離れる',
-              'スクリーンセーバーの時間設定をしているので問題なし',
-              'デスクトップの表示状態にして席を離れる',
-              '10分なのでそのまま席を離れる',
-            ],
-          },
-          {
-            no: 2,
-            question:
-              '10分ほど休憩で離席しようと考えています。<br/>スクリーンセーバーの時間設定はしていますが、何らかの理由で動作していない事は認識しています。<br/>正しい行動はどれですか？',
-            choices: [
-              '手動でロックをしてから席を離れる',
-              'スクリーンセーバーの時間設定をしているので問題なし',
-              'デスクトップの表示状態にして席を離れる',
-              '10分なのでそのまま席を離れる',
-            ],
-          },
-        ].map((quiz) => (
+        {quizs.map((quiz: any) => (
           <Grid item xs={12} key={quiz.no}>
             <Box className={pageClass.inputEmail}>
               <Box mb={3}>
@@ -109,17 +86,18 @@ const TestPage: FC<{}> = () => {
                 </Typography>
               </Box>
               <FormControl component="fieldset">
-                <StyledRadioGroup name="question1" onChange={handleChange}>
-                  {quiz.choices.map((choice, index) => (
-                    <FormControlLabel value={index} control={<Radio />} label={choice} />
-                  ))}
+                <StyledRadioGroup name="question" onChange={handleChange}>
+                  {quiz.choicesA && <FormControlLabel value={0} control={<Radio />} label={quiz.choicesA} />}
+                  {quiz.choicesB && <FormControlLabel value={1} control={<Radio />} label={quiz.choicesB} />}
+                  {quiz.choicesC && <FormControlLabel value={2} control={<Radio />} label={quiz.choicesC} />}
+                  {quiz.choicesD && <FormControlLabel value={3} control={<Radio />} label={quiz.choicesD} />}
                 </StyledRadioGroup>
               </FormControl>
             </Box>
           </Grid>
         ))}
         <Grid item xs={4}>
-          <ActionButton onClick={submit} fullWidth color="primary">
+          <ActionButton fullWidth color="primary">
             送信
           </ActionButton>
         </Grid>

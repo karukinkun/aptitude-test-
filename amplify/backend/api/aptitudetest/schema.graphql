@@ -3,3 +3,27 @@ type Todo @model {
   name: String!
   description: String
 }
+
+type Catergory @model {
+  id: ID!
+  description: String!
+  quizs: [Quiz] @connection(keyName: "byCategory", fields: ["id"])
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type Quiz @model
+  @key(name: "byCategory", fields: ["catergoryId"]) {
+  id: ID!
+  catergoryId: ID!
+  no: Int!
+  question: String!
+  answer: String!
+  choicesA: String
+  choicesB: String
+  choicesC: String
+  choicesD: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  catergory: Catergory @connection(fields: ["catergoryId"])
+}

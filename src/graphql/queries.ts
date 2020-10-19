@@ -31,21 +31,105 @@ export const listTodos = /* GraphQL */ `
     }
   }
 `;
-
-export const listPosts = `query ListPosts(
-  $filter: ModelPostFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
+export const getCatergory = /* GraphQL */ `
+  query GetCatergory($id: ID!) {
+    getCatergory(id: $id) {
       id
-      title
-      content
-      price
-      rating
+      description
+      quizs {
+        items {
+          id
+          catergoryId
+          no
+          question
+          answer
+          choicesA
+          choicesB
+          choicesC
+          choicesD
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
     }
-    nextToken
   }
-}
+`;
+export const listCatergorys = /* GraphQL */ `
+  query ListCatergorys(
+    $filter: ModelCatergoryFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCatergorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        description
+        quizs {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getQuiz = /* GraphQL */ `
+  query GetQuiz($id: ID!) {
+    getQuiz(id: $id) {
+      id
+      catergoryId
+      no
+      question
+      answer
+      choicesA
+      choicesB
+      choicesC
+      choicesD
+      createdAt
+      updatedAt
+      catergory {
+        id
+        description
+        quizs {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+export const listQuizs = /* GraphQL */ `
+  query ListQuizs(
+    $filter: ModelQuizFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listQuizs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        catergoryId
+        no
+        question
+        answer
+        choicesA
+        choicesB
+        choicesC
+        choicesD
+        createdAt
+        updatedAt
+        catergory {
+          id
+          description
+          createdAt
+          updatedAt
+        }
+      }
+      nextToken
+    }
+  }
 `;
