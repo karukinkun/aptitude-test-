@@ -23,6 +23,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 import { getCatergory, listCatergorys, listQuizs, listTodos } from 'graphql/queries';
 import { GetCatergoryQuery, ListCatergorysQuery, ListQuizsQuery } from 'API';
 import moment from 'moment';
+import CustomDialog, { useDialog } from 'components/common/CustomDialog';
 
 /* material-uiコンポーネント 既存スタイルの上書き
 -------------------------------------------------------------- */
@@ -35,11 +36,13 @@ const StyledRadioGroup = withStyles(() => ({
 const TestPage: FC<{}> = () => {
   const history = useHistory();
   const pageClass = pageStyles();
-  const lineAreaRef = useRef<HTMLInputElement | null>(null);
+  const { openDialog, dialogProps } = useDialog();
   const [catergory, setCatergory] = useState<any>();
   const [quizs, setQuizs] = useState<any>([]);
-  const [time, setTime] = useState<any>(300000);
+  const [time, setTime] = useState<any>(5000);
+  const [pause, setPause] = useState<boolean>(false);
 
+  const [timerId, setTimerId] = useState<any>();
   const [conditions, setConditions] = useState<any>({
     question1: null,
     question2: null,
@@ -72,18 +75,47 @@ const TestPage: FC<{}> = () => {
     })();
   }, []);
 
+  /**
+   * メール送信実行
+   */
+  const btnAction = useCallback(async () => {}, []);
+
+  /**
+   * 確認ダイアログを表示
+   */
+  const openNextDialog = useCallback(() => {
+    openDialog({
+      title: 'URL通知メールの一括送信',
+      content: (
+        <>
+          現在一覧に表示されている注文情報に対し、URL通知メールを一括送信します。
+          <br />
+          本当に送信してもよろしいでしょうか？
+        </>
+      ),
+      buttonTitle: '送信',
+      action: btnAction,
+    });
+  }, [openDialog, btnAction]);
+
   // カウントダウン処理
   const countdown = useCallback(() => {
     setTime((count: number) => count - 1000);
-  }, []);
+    if (time === 0) {
+      setPause(true);
+    }
+  }, [time]);
 
   // 1秒ごとにカウントダウン処理を実行
   useEffect(() => {
-    setInterval(countdown, 1000);
-  }, [countdown]);
+    if (!pause) {
+      setInterval(countdown, 1000);
+    }
+  }, [countdown, pause]);
 
   return (
     <>
+      <CustomDialog {...dialogProps} />
       <Box bgcolor="primary.main" py={3} textAlign="center">
         <Typography component="p" variant="h4">
           <Box component="span" color="#FFF" fontWeight={700}>
