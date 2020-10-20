@@ -3,25 +3,14 @@
  *************************************************/
 import { GraphQLResult } from '@aws-amplify/api';
 
-import React, { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
-import {
-  FormControl,
-  InputLabel,
-  Grid,
-  Input,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Typography,
-  withStyles,
-} from '@material-ui/core';
-import { pageStyles } from 'components/Login/Styles';
+import { FormControl, Grid, FormControlLabel, Radio, RadioGroup, Typography, withStyles } from '@material-ui/core';
 import ActionButton from 'components/common/ActionButton';
 import { API, graphqlOperation } from 'aws-amplify';
-import { getCatergory, listCatergorys, listQuizs, listTodos } from 'graphql/queries';
-import { GetCatergoryQuery, ListCatergorysQuery, ListQuizsQuery } from 'API';
+import { getCatergory } from 'graphql/queries';
+import { GetCatergoryQuery } from 'API';
 import moment from 'moment';
 import CustomDialog, { useDialog } from 'components/common/CustomDialog';
 
@@ -33,16 +22,12 @@ const StyledRadioGroup = withStyles(() => ({
   },
 }))(RadioGroup);
 
-const TestPage: FC<{}> = () => {
-  const history = useHistory();
-  const pageClass = pageStyles();
+const QuestionPage: FC<{}> = () => {
   const { openDialog, dialogProps } = useDialog();
-  const [catergory, setCatergory] = useState<any>();
+  const [, setCatergory] = useState<any>();
   const [quizs, setQuizs] = useState<any>([]);
   const [time, setTime] = useState<any>(5000);
   const [pause, setPause] = useState<boolean>(false);
-
-  const [timerId, setTimerId] = useState<any>();
   const [conditions, setConditions] = useState<any>({
     question1: null,
     question2: null,
@@ -80,24 +65,6 @@ const TestPage: FC<{}> = () => {
    */
   const btnAction = useCallback(async () => {}, []);
 
-  /**
-   * 確認ダイアログを表示
-   */
-  const openNextDialog = useCallback(() => {
-    openDialog({
-      title: 'URL通知メールの一括送信',
-      content: (
-        <>
-          現在一覧に表示されている注文情報に対し、URL通知メールを一括送信します。
-          <br />
-          本当に送信してもよろしいでしょうか？
-        </>
-      ),
-      buttonTitle: '送信',
-      action: btnAction,
-    });
-  }, [openDialog, btnAction]);
-
   // カウントダウン処理
   const countdown = useCallback(() => {
     setTime((count: number) => count - 1000);
@@ -109,7 +76,7 @@ const TestPage: FC<{}> = () => {
   // 1秒ごとにカウントダウン処理を実行
   useEffect(() => {
     if (!pause) {
-      setInterval(countdown, 1000);
+      // setInterval(countdown, 1000);
     }
   }, [countdown, pause]);
 
@@ -127,7 +94,7 @@ const TestPage: FC<{}> = () => {
         <Grid container justify="center" alignItems="center">
           {quizs.map((quiz: any) => (
             <Grid item xs={12} key={quiz.no}>
-              <Box className={pageClass.inputEmail}>
+              <Box>
                 <Box mb={3}>
                   <Typography component="p" variant="h4">
                     <span
@@ -160,4 +127,4 @@ const TestPage: FC<{}> = () => {
     </>
   );
 };
-export default TestPage;
+export default QuestionPage;

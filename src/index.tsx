@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { CssBaseline } from '@material-ui/core';
 import { BrowserRouter } from 'react-router-dom';
+import store from 'app/store';
 import Amplify from 'aws-amplify'; // <--- 追加
+import { Provider } from 'react-redux';
 import App from './app/App';
 import * as serviceWorker from './serviceWorker';
 import config from './aws-exports';
@@ -11,12 +13,12 @@ import config from './aws-exports';
 Amplify.configure(config); // <--- 追加
 
 ReactDOM.render(
-  <>
+  <Provider store={store}>
     <CssBaseline />
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </>,
+  </Provider>,
   document.getElementById('root'),
 );
 
